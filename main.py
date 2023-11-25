@@ -9,8 +9,8 @@ from fiona.errors import DriverError
 
 def get_boulder_dimensions(polygon):
     """
-    Creates rectangle around polygon and returns its length and width representing the largets distance within the
-    polygon and the distance within the polygon perpendicular to the length.
+    Creates rectangle around polygon and returns its length and width as a Tuple representing the largets distance
+    within the polygon and the distance within the polygon perpendicular to the length.
     """
     poly = Polygon(polygon)
     rectangle = poly.minimum_rotated_rectangle
@@ -124,20 +124,21 @@ def main(vector_file, geotiff_file, block_value):
         for boulder in boulders:
             centroid = boulder.centroid
             centroid_coordinates = get_coordinates(centroid)
-            seabed_depth = get_deepest_point_around_shape(boulder, depths_file)
-            boulder_depth = get_highest_point_within_shape(boulder, depths_file)
+            seabed_depth = get_deepest_point_around_shape(boulder, depths_file)  # Lowest point along polygon edges
+            boulder_depth = get_highest_point_within_shape(boulder, depths_file)  # Highest point within polygon limits
 
             poly_id.append(index)
             target_id.append(f"MBES_{cleaned_block_input}_{index:02d}")
             block.append(block_input)
             easting.append(centroid_coordinates['Easting'])
             northing.append(centroid_coordinates['Northing'])
-            water_depth.append(get_deepest_point_around_shape(boulder, depths_file))
+            water_depth.append(get_depth_data(centroid, depths_file))  # Depth at the polygon/boulder centroid
             length.append(get_boulder_dimensions(boulder)[0])
             width.append(get_boulder_dimensions(boulder)[1])
-            height.append(get_relative_depth(seabed_depth, boulder_depth))
+            height.append(get_relative_depth(seabed_depth, boulder_depth))  # Height of the boulder
             index += 1
 
+    # Create dataframe with all the processed information
     df = pd.DataFrame(
         {
             "Poly_ID": poly_id,
@@ -152,7 +153,9 @@ def main(vector_file, geotiff_file, block_value):
         }
     )
 
+    # Create geometry using Easting and Northing columns in the dataframe
     geometry = [Point(xy) for xy in zip(df['Easting'], df['Northing'])]
+    # Export data to .shp file
     gdf = gpd.GeoDataFrame(df, geometry=geometry)
     gdf.to_file(filename="Output.shp", index=None)
     print("Complete! Output.shp has been created")
