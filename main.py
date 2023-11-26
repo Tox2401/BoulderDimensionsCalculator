@@ -163,15 +163,10 @@ def main(vector_file, geotiff_file, block_value):
 
 if __name__ == "__main__":
 
-    cwd = os.getcwd()
-
     while True:
-        vector_file_input = input("Enter .shp (vector) file name: ")
-        geotiff_file_input = input("Enter .tif (geotiff) file name: ")
+        vector_file = input("Enter .shp (vector) file name: ")
+        geotiff_file = input("Enter .tif (geotiff) file name: ")
         block_input = input('Enter "Block" value: ')
-
-        vector_file = f"{cwd}\\{vector_file_input}"
-        geotiff_file = f"{cwd}\\{geotiff_file_input}"
         print("Processing data.....")
         try:
             main(vector_file, geotiff_file, block_input)
