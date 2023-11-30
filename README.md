@@ -15,16 +15,6 @@ Requirements:
 - [Shapely](https://pypi.org/project/shapely/)
 - [Fiona](https://pypi.org/project/fiona/)
 
-Testing files are included in Github repo:
-
-- Test\_Encoded\_Depths\_File.tif
-- Test\_Encoded\_Depths\_File.tif.aux.xml
-- Test\_Manually\_Picked\_Boulders.shp
-- Test\_Manually\_Picked\_Boulders.dbf
-- Test\_Manually\_Picked\_Boulders.prj
-- Test\_Manually\_Picked\_Boulders.qix
-- Test\_Manually\_Picked\_Boulders.shx
-
 This is console-based program which will prompt user to provide the following data:
 
 - SHP file name
